@@ -107,7 +107,7 @@ func (cr *ChartRepository) StreamChart(ticker string, lastPoint chan *domain.Poi
 		lastPoint <- &point
 	}
 	errHandler := func(err error) {
-		fmt.Println(err)
+		cr.StreamChart(ticker, lastPoint)
 	}
 	doneC, _, err := binance.WsKlineServe(ticker, c.Config.ChartPeriod, wsKlineHandler, errHandler)
 	if err != nil {

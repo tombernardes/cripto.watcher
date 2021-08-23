@@ -26,8 +26,7 @@ func (wr *WalletRepository) getBinanceWallet() *binance.Account {
 func (wr *WalletRepository) GetWallet() *w.Wallet {
 	bWallet := wr.getBinanceWallet()
 	if bWallet == nil {
-		fmt.Println("Error on getting wallet. Binance wallet is nil")
-		return nil
+		return wr.GetWallet()
 	}
 	wallet := w.Wallet{}
 	wallet.UpdateTime = bWallet.UpdateTime

@@ -21,6 +21,7 @@ type Configuration struct {
 	ChartPeriod      string   `json:"chart-period,omitempty"`
 	Tickers          []string `json:"tickers,omitempty"`
 	Client           *binance.Client
+	OpenOrders       int64 `json:"open-orders,omitempty"`
 }
 
 func init() {

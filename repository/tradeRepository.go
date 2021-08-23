@@ -11,8 +11,8 @@ import (
 type TradeRepository struct {
 }
 
-func (t *TradeRepository) StreamTrades(ticker string, lastPoint chan *domain.Point) {
-	wsAggTradeHandler := func(v *binance.WsAggTradeEvent) {
+func (t *TradeRepository) StreamTrades(ticker string, trades chan *domain.Trade) {
+	wsTradeHandler := func(v *binance.WsTradeEvent) {
 		close := float64(0)
 		quantity := float64(0)
 		if val, err := strconv.ParseFloat(v.Price, 64); err == nil {
@@ -21,18 +21,26 @@ func (t *TradeRepository) StreamTrades(ticker string, lastPoint chan *domain.Poi
 		if val, err := strconv.ParseFloat(v.Quantity, 64); err == nil {
 			quantity = val
 		}
-		point := domain.Point{
-			Ticker:     ticker,
-			ClosePrice: close,
-			Volume:     close * quantity,
-			Trades:     v.LastBreakdownTradeID - v.FirstBreakdownTradeID,
+
+		trade := domain.Trade{
+			Ticker:   ticker,
+			Time:     v.Time,
+			Quantity: quantity,
+			Price:    close,
+			Volume:   close * quantity,
+			IsMaker:  v.IsBuyerMaker,
 		}
-		lastPoint <- &point
+		if v.IsBuyerMaker {
+			trade.WhoTake = "Seller"
+		} else {
+			trade.WhoTake = "Buyer"
+		}
+		trades <- &trade
 	}
 	errHandler := func(err error) {
-		fmt.Println(err)
+		t.StreamTrades(ticker, trades)
 	}
-	doneC, _, err := binance.WsAggTradeServe(ticker, wsAggTradeHandler, errHandler)
+	doneC, _, err := binance.WsTradeServe(ticker, wsTradeHandler, errHandler)
 	if err != nil {
 		fmt.Println(err)
 		return

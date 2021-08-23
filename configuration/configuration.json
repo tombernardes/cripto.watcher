@@ -3,7 +3,8 @@
     "binance-api-key": "x5VdvWmSyy2u5lZiOLtpiwZSXYFOrJZIjAmakHfbzd5Na4Kxi6bJSzPTaLO88Jqo",
     "binance-secret-key": "YUJTaSZ4HlSwiqQt7c1blqdFWWQJfdubKc68CnIUCp3WOB9pb0meeY7yyVmPnI8Q",
     "tickers": [
-        "BTCUSDT"
+        "ADAUSDT"
     ],
-    "chart-period": "1m"
+    "chart-period": "1m",
+    "open-orders": 1
 }
